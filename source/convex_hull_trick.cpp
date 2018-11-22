@@ -42,7 +42,7 @@ public:
         return hull[l].get(x);
     }
 
-    long long queryFast(long long x) {
+    long long fastQuery(long long x) {
         static size_t it = 0;
 		it = min(it, hull.size() - 1);
 		while (it + 1 < hull.size()) {
