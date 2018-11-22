@@ -1,0 +1,59 @@
+\documentclass[12pt]{article}
+
+\usepackage{listings}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+\usepackage{geometry}
+
+\geometry{
+	a4paper,
+	top=74pt,
+	bottom=40pt,
+	left=40pt,
+	right=40pt,
+}
+\lstset{
+	language=C++,
+	tabsize=4,
+}
+\fancyhf{}
+\fancyhead[L]{Belarusian SUIR (Udovin, Udovin, Udovin)}
+\fancyhead[R]{Page~\thepage~of~\pageref{LastPage}}
+
+\begin{document}
+\pagestyle{fancy}
+\newpage
+\section{Math}
+\subsection{Extended GCD (non-recursive)}
+Time complexity: $O(\log \max \{a, b\})$
+\lstinputlisting{source/exgcd.cpp}
+\section{Data structures}
+\subsection{Segment tree}
+Time complexity: $O(\log n)$
+\subsection{Treap}
+Time complexity: $O(\log n)$
+\subsection{Implicit Treap}
+Time complexity: $O(\log n)$
+\subsection{Splay tree}
+\subsection{Dynamic trees}
+\section{Strings}
+\subsection{Knuth-Morris-Pratt}
+\lstinputlisting{source/knuth_morris_pratt.cpp}
+\subsection{Aho-Corasick}
+\subsection{Suffix automaton}
+\subsection{Suffix array}
+\subsection{LCP}
+\section{Dynamic programming}
+\subsection{Convex Hull Trick}
+\lstinputlisting{source/convex_hull_trick.cpp}
+\subsection{Dynamic Convex Hull Trick}
+\lstinputlisting{source/dynamic_convex_hull_trick.cpp}
+\section{Geometry}
+\subsection{2D framework}
+\lstinputlisting{source/geom_2d.cpp}
+\section{Other algorithms}
+\subsection{Simplex method (two-phased)}
+Time complexity: $O((n + m) \cdot n)$
+\lstinputlisting{source/simplex.cpp}
+\end{document}
