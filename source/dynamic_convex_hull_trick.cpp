@@ -4,7 +4,7 @@ private:
 		long long a, b;
 		bool isQuery;
 		mutable set<Line>::iterator prev, next;
-		set<Line> *root;
+		const set<Line>* root;
 
 		bool operator<(const Line &line) const {
 			if (!line.isQuery)
