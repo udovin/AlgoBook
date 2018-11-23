@@ -3,7 +3,7 @@ private:
 	struct Line {
 		long long a, b;
 
-		long long get(long long x) {
+		long long get(long long x) const {
 			return a * x + b;
 		}
 	};
