@@ -1,51 +1,51 @@
 const double EPS = 1e-9;
 
 class Simplex {
-	size_t m, n;
+	int m, n;
 	vector<vector<double>> D;
-	vector<size_t> B, N;
+	vector<int> B, N;
 
-	void pivot(size_t r, size_t s) {
+	void pivot(int r, int s) {
 		double inv = 1 / D[r][s];
-		for (size_t i = 0; i < m + 2; i++)
+		for (int i = 0; i < m + 2; i++)
 			if (i != r)
-				for (size_t j = 0; j < n + 2; j++)
+				for (int j = 0; j < n + 2; j++)
 					if (j != s)
 						D[i][j] -= D[r][j] * D[i][s] * inv;
-		for (size_t j = 0; j < n + 2; j++)
+		for (int j = 0; j < n + 2; j++)
 			if (j != s)
 				D[r][j] *= inv;
-		for (size_t i = 0; i < m + 2; i++)
+		for (int i = 0; i < m + 2; i++)
 			if (i != r)
 				D[i][s] *= -inv;
 		D[r][s] = inv;
 		swap(B[r], N[s]);
 	}
 
-	bool simplex(bool first) {
-		size_t x = first ? m + 1 : m;
-		for(;;) {
-			size_t s = n + 1;
-			for (size_t j = 0; j <= n; j++) {
-				if (!first && N[j] == n + m + 1)
+	bool simplex(int phase) {
+		int x = phase == 1 ? m + 1 : m;
+		for (;;) {
+			int s = -1;
+			for (int j = 0; j <= n; j++) {
+				if (phase == 2 && N[j] < 0)
 					continue;
-				if (s == n + 1 || D[x][j] < D[x][s]
+				if (s < 0 || D[x][j] < D[x][s]
 					|| D[x][j] == D[x][s] && N[j] < N[s])
 					s = j;
 			}
-			if (s == n + 1 || D[x][s] > -EPS)
+			if (s < 0 || D[x][s] > -EPS)
 				return true;
-			size_t r = m;
-			for (size_t i = 0; i < m; i++) {
+			int r = -1;
+			for (int i = 0; i < m; i++) {
 				if (D[i][s] < EPS)
 					continue;
-				if (r == m
+				if (r < 0
 					|| D[i][n + 1] * D[r][s] < D[r][n + 1] * D[i][s]
 					|| D[i][n + 1] * D[r][s] == D[r][n + 1] * D[i][s]
 					&& B[i] < B[r])
 					r = i;
 			}
-			if (r == m)
+			if (r < 0)
 				return false;
 			pivot(r, s);
 		}
@@ -59,35 +59,35 @@ public:
 		const vector<double> &b, const vector<double> &c)
 		: m(b.size()), n(c.size()), N(n + 1), B(m)
 		, D(m + 2, vector<double>(n + 2)) {
-		for (size_t i = 0; i < m; i++)
-			for (size_t j = 0; j < n; j++)
+		for (int i = 0; i < m; i++)
+			for (int j = 0; j < n; j++)
 				D[i][j] = A[i][j];
-		for (size_t i = 0; i < m; i++) {
+		for (int i = 0; i < m; i++) {
 			B[i] = n + i;
 			D[i][n] = -1;
-			D[i][n+1] = b[i];
+			D[i][n + 1] = b[i];
 		}
-		for (size_t j = 0; j < n; j++) {
+		for (int j = 0; j < n; j++) {
 			N[j] = j;
 			D[m][j] = -c[j];
 		}
-		N[n] = n + m + 1;
+		N[n] = -1;
 		D[m + 1][n] = 1;
 	}
 
 	double solve(vector<double> &x) {
-		size_t r = 0;
-		for (size_t i = 1; i < m; i++)
+		int r = 0;
+		for (int i = 1; i < m; i++)
 			if (D[i][n + 1] < D[r][n + 1])
 				r = i;
 		if (D[r][n + 1] < -EPS) {
 			pivot(r, n);
-			if (!simplex(true) || D[m + 1][n + 1] < -EPS)
+			if (!simplex(1) || D[m + 1][n + 1] < -EPS)
 				throw Infeasible();
-			for (size_t i = 0; i < m; i++) {
-				if (B[i] == n + m + 1) {
-					size_t s = 0;
-					for (size_t j = 1; j <= n; j++)
+			for (int i = 0; i < m; i++) {
+				if (B[i] < 0) {
+					int s = 0;
+					for (int j = 1; j <= n; j++)
 						if (D[i][j] < D[i][s]
 							|| D[i][j] == D[i][s] && N[j] < N[s])
 							s = j;
@@ -95,10 +95,10 @@ public:
 				}
 			}
 		}
-		if (!simplex(false))
+		if (!simplex(2))
 			throw Unbounded();
 		x = vector<double>(n);
-		for (size_t i = 0; i < m; i++)
+		for (int i = 0; i < m; i++)
 			if (B[i] < n)
 				x[B[i]] = D[i][n + 1];
 		return D[m][n + 1];
