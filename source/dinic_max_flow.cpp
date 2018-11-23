@@ -53,8 +53,8 @@ public:
 		: n(n), s(s), t(t), g(n), d(n), it(n) {}
 
 	void addEdge(int a, int b, int cap) {
-		Edge e1 = {b, g[b].size(), cap, 0};
-		Edge e2 = {a, g[a].size(), 0, 0};
+		Edge e1 = {b, int(g[b].size()), cap, 0};
+		Edge e2 = {a, int(g[a].size()), 0, 0};
 		g[a].push_back(e1);
 		g[b].push_back(e2);
 	}
