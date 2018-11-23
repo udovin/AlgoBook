@@ -52,14 +52,14 @@ public:
 	DinicMaxFlow(int n, int s, int t)
 		: n(n), s(s), t(t), g(n), d(n), it(n) {}
 
-	void addEdge(int a, int b, int cap) {
+	void add(int a, int b, int cap) {
 		Edge e1 = {b, int(g[b].size()), cap, 0};
 		Edge e2 = {a, int(g[a].size()), 0, 0};
 		g[a].push_back(e1);
 		g[b].push_back(e2);
 	}
 
-	int getMaxFlow() {
+	int get() {
 		int flow = 0;
 		while (bfs()) {
 			fill(it.begin(), it.end(), 0);
