@@ -27,9 +27,9 @@ public:
 	}
 
 	long long get(long long x) const {
-		size_t l = 0, r = hull.size() - 1;
+		int l = 0, r = int(hull.size()) - 1;
 		while (l < r) {
-			size_t m = (l + r) / 2;
+			int m = (l + r) / 2;
 			if (hull[m].get(x) <= hull[m + 1].get(x))
 				l = m + 1;
 			else
@@ -39,8 +39,8 @@ public:
 	}
 
 	long long fastGet(long long x) {
-		static size_t it = 0;
-		it = min(it, hull.size() - 1);
+		static int it = 0;
+		it = min(it, int(hull.size()) - 1);
 		while (it + 1 < hull.size()) {
 			if (hull[it].get(x) > hull[it + 1].get(x))
 				break;
