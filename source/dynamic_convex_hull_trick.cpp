@@ -37,11 +37,7 @@ private:
 public:
 	DynamicConvexHullTrick() : hull() {}
 
-	void clear() {
-		hull.clear();
-	}
-
-	void addLine(long long a, long long b) {
+	void add(long long a, long long b) {
 		Line line = (Line){a, b, false, hull.end(), hull.end(), &hull};
 		set<Line>::iterator curr = hull.find(line);
 		if (curr != hull.end()) {
@@ -65,9 +61,13 @@ public:
 			removeLine(curr->prev);
 	}
 
-	long long query(long long x) {
+	long long get(long long x) const {
 		Line query = (Line){x, 0, true, hull.end(), hull.end(), &hull};
 		Line line = *hull.lower_bound(query);
 		return line.a * x + line.b;
+	}
+
+	void clear() {
+		hull.clear();
 	}
 };

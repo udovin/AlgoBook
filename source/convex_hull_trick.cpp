@@ -20,17 +20,13 @@ private:
 public:
 	ConvexHullTrick() : hull() {}
 
-	void clear() {
-		hull.clear();
-	}
-
-	void addLine(long long a, long long b) {
+	void add(long long a, long long b) {
 		hull.push_back((Line){a, b});
 		while (hull.size() > 2 && isBad(hull.end() - 2))
 			hull.erase(hull.end() - 2);
 	}
 
-	long long query(long long x) {
+	long long get(long long x) const {
 		size_t l = 0, r = hull.size() - 1;
 		while (l < r) {
 			size_t m = (l + r) / 2;
@@ -42,7 +38,7 @@ public:
 		return hull[l].get(x);
 	}
 
-	long long fastQuery(long long x) {
+	long long fastGet(long long x) {
 		static size_t it = 0;
 		it = min(it, hull.size() - 1);
 		while (it + 1 < hull.size()) {
@@ -56,5 +52,9 @@ public:
 			it--;
 		}
 		return hull[it].get(x);
+	}
+
+	void clear() {
+		hull.clear();
 	}
 };
