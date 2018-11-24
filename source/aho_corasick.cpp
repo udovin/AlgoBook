@@ -24,10 +24,10 @@ private:
 public:
 	AhoCorasick() : t(1) {}
 
-	void add(const string& s, int i) {
+	void add(const string& s) {
 		int v = 0;
 		for (char c : s) {
-			if (t[v].to.find(c) == t[v].to.end()) {
+			if (!t[v].to.count(c)) {
 				t[v].to[c] = t.size();
 				t.emplace_back();
 			}
@@ -44,7 +44,7 @@ public:
 				q.push(p.second);
 				if (v > 0) {
 					int u = t[v].link;
-					while (u > 0 && t[u].to.find(p.first) == t[u].to.end())
+					while (u > 0 && !t[u].to.count(p.first))
 						u = t[u].link;
 					if (t[u].to.find(p.first) != t[u].to.end())
 						u = t[u].to[p.first];
@@ -67,9 +67,9 @@ public:
 	}
 
 	int go(int v, char c) const {
-		while (v > 0 && t[v].to.find(c) == t[v].to.end())
+		while (v > 0 && !t[v].to.count(c))
 			v = t[v].link;
-		if (t[v].to.find(c) != t[v].to.end())
+		if (t[v].to.count(c))
 			v = t[v].to.find(c)->second;
 		return v;
 	}
