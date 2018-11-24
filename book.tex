@@ -3,6 +3,8 @@
 \usepackage{listings}
 \usepackage{fancyhdr}
 \usepackage{lastpage}
+\usepackage{courier}
+\usepackage{xcolor}
 
 \usepackage{geometry}
 
@@ -16,6 +18,7 @@
 \lstset{
 	language=C++,
 	tabsize=4,
+	basicstyle=\normalsize\ttfamily,
 }
 \fancyhf{}
 \fancyhead[L]{Belarusian SUIR (Shavel, Udovin, Vishneuski)}
@@ -40,12 +43,17 @@ Time complexity: $O(\log n)$
 \subsection{Splay tree}
 \subsection{Dynamic trees}
 
+\section{Graphs}
+\subsection{Dinic max flow}
+\lstinputlisting{source/dinic_max_flow.cpp}
+
 \section{Strings}
 \subsection{Knuth-Morris-Pratt}
 \lstinputlisting{source/knuth_morris_pratt.cpp}
 \subsection{Aho-Corasick}
 \lstinputlisting{source/aho_corasick.cpp}
 \subsection{Suffix automaton}
+\lstinputlisting{source/suffix_automaton.cpp}
 \subsection{Suffix array}
 \subsection{LCP}
 
