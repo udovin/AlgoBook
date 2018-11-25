@@ -55,7 +55,8 @@ private:
 	}
 
 	void update(int x) {
-		t[x].value = getNodeValue(x) + getValue(t[x].left) + getValue(t[x].right);
+		t[x].value = getNodeValue(x)
+			+ getValue(t[x].left) + getValue(t[x].right);
 		t[x].size = 1 + getSize(t[x].left) + getSize(t[x].right);
 	}
 
