@@ -4,7 +4,8 @@ private:
 	vector<vector<int>> h, p;
 
 public:
-	HashString(const string& s, const vector<int>& a, const vector<int>& m)
+	HashString(
+		const string& s, const vector<int>& a, const vector<int>& m)
 		: a(a), m(m), h(a.size()), p(a.size()) {
 		for (int i = 0; i < m.size(); i++) {
 			h[i].resize(s.size() + 1);

@@ -1,4 +1,4 @@
-\documentclass[12pt]{article}
+\documentclass[11pt]{article}
 
 \usepackage{listings}
 \usepackage{fancyhdr}
@@ -30,16 +30,22 @@
 
 \section{Math}
 \subsection{Extended GCD (non-recursive)}
-Time complexity: $O(\log \max \{a, b\})$
 \lstinputlisting{source/exgcd.cpp}
+\subsection{Big Integer}
+\lstinputlisting{source/big_integer.cpp}
+\subsection{Facts}
+$\mu(n) = 1$~--- when $p^2 \not| \;n$ and $2 \;|$ sum of powers.\\
+$\mu(n) = -1$~--- when $p^2 \not| \;n$ and $2 \not|$ sum of powers.\\
+$\mu(n) = 0$~--- otherwise.
+
+$g(n) = \sum_{d | n}f(d)$, $f(n) = \sum_{d | n}\mu(d)g(n/d)$
+
+$M={\displaystyle \prod _{{i=1}}^{n}a_{i}}$,
+$M_{i}={\frac  M{a_{i}}}$,
+$M_{i}^{{-1}}={\frac  1{M_{i}}}{\bmod  {a_{i}}}$,
+$x=\sum_{i=1}^{n}r_{i}M_{i}M_{i}^{-1}\bmod M$
 
 \section{Data structures}
-\subsection{Segment tree}
-Time complexity: $O(\log n)$
-\subsection{Treap}
-Time complexity: $O(\log n)$
-\subsection{Implicit Treap}
-Time complexity: $O(\log n)$
 
 \section{Graphs}
 \subsection{Dinic max flow}
@@ -48,8 +54,8 @@ Time complexity: $O(\log n)$
 \lstinputlisting{source/link_cut_tree.cpp}
 
 \section{Strings}
-\subsection{Knuth-Morris-Pratt}
-\lstinputlisting{source/knuth_morris_pratt.cpp}
+%\subsection{Knuth-Morris-Pratt}
+%\lstinputlisting{source/knuth_morris_pratt.cpp}
 \subsection{Z-function}
 \lstinputlisting{source/zet_function.cpp}
 \subsection{Aho-Corasick}
@@ -58,8 +64,8 @@ Time complexity: $O(\log n)$
 \lstinputlisting{source/suffix_automaton.cpp}
 \subsection{Hash string}
 \lstinputlisting{source/hash_string.cpp}
-\subsection{Suffix array}
-\subsection{LCP}
+\subsection{Manacher}
+\lstinputlisting{source/manacher.cpp}
 
 \section{Dynamic programming}
 \subsection{Convex Hull Trick}

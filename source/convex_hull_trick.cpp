@@ -14,7 +14,8 @@ private:
 		vector<Line>::iterator prev = curr, next = curr;
 		--prev, ++next;
 		const Line& p = *prev, c = *curr, n = *next;
-		return (c.b - n.b) * (c.a - p.a) <= (p.b - c.b) * (n.a - c.a);
+		return (c.b - n.b) * (long double)(c.a - p.a)
+			<= (p.b - c.b) * (long double)(n.a - c.a);
 	}
 
 public:

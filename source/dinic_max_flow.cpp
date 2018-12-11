@@ -12,10 +12,9 @@ private:
 	vector<int> d, it;
 
 	bool bfs() {
-		fill(d.begin(), d.end(), -1);
 		queue<int> q;
-		d[s] = 0;
-		for (q.push(s); !q.empty(); q.pop()) {
+		fill(d.begin(), d.end(), -1);
+		for (d[s] = 0, q.push(s); !q.empty(); q.pop()) {
 			int a = q.front();
 			for (int i = 0; i < g[a].size(); i++) {
 				const Edge& e = g[a][i];
@@ -40,8 +39,7 @@ private:
 				continue;
 			int delta = dfs(b, min(flow, e.cap - e.flow));
 			if (delta > 0) {
-				e.flow += delta;
-				r.flow -= delta;
+				e.flow += delta, r.flow -= delta;
 				return delta;
 			}
 		}
