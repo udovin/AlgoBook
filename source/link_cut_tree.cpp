@@ -1,52 +1,42 @@
 class LinkCutTree {
 private:
-	struct Node {
+	struct Vertex {
 		int left, right, parent;
-		int size;
 		bool revert;
-		long long nodeValue;
-		long long value;
-		long long delta;
+		int size;
+		int64_t value, result, delta;
 
-		Node()
+		Vertex()
 			: left(-1), right(-1), parent(-1), revert()
-			, size(1), nodeValue(), value(), delta() {}
+			, size(1), value(), result(), delta() {}
 	};
 
-	vector<Node> t;
+	vector<Vertex> t;
 
 	bool isRoot(int x) const {
 		int p = t[x].parent;
 		return p == -1 || (t[p].left != x && t[p].right != x);
 	}
 
-	int getSize(int x) const {
-		return x == -1 ? 0 : t[x].size;
+	int64_t getValue(int x) const {
+		return t[x].value + t[x].delta;
 	}
 
-	long long getNodeValue(int x) const {
-		if (x == -1)
-			return 0;
-		return t[x].nodeValue + t[x].delta;
-	}
-
-	long long getValue(int x) const {
-		if (x == -1)
-			return 0;
-		return t[x].value + t[x].size * t[x].delta;
+	int64_t getResult(int x) const {
+		return t[x].result + t[x].delta * t[x].size;
 	}
 
 	void push(int x) {
 		if (t[x].revert) {
-			t[x].revert = false;
-			swap(t[x].left, t[x].right);
 			if (t[x].left != -1)
 				t[t[x].left].revert = !t[t[x].left].revert;
 			if (t[x].right != -1)
 				t[t[x].right].revert = !t[t[x].right].revert;
+			swap(t[x].left, t[x].right);
+			t[x].revert = false;
 		}
-		t[x].nodeValue = getNodeValue(x);
 		t[x].value = getValue(x);
+		t[x].result = getResult(x);
 		if (t[x].left != -1)
 			t[t[x].left].delta += t[x].delta;
 		if (t[x].right != -1)
@@ -55,54 +45,64 @@ private:
 	}
 
 	void update(int x) {
-		t[x].value = getNodeValue(x)
-			+ getValue(t[x].left) + getValue(t[x].right);
-		t[x].size = 1 + getSize(t[x].left) + getSize(t[x].right);
-	}
-
-	void connect(int x, int p, int left) {
-		if (x != -1)
-		t[x].parent = p;
-		if (left != -1) {
-			if (left)
-				t[p].left = x;
-			else
-				t[p].right = x;
+		t[x].size = 1;
+		t[x].result = getValue(x);
+		if (t[x].left != -1) {
+			t[x].size += t[t[x].left].size;
+			t[x].result += getResult(t[x].left);
+		}
+		if (t[x].right != -1) {
+			t[x].size += t[t[x].right].size;
+			t[x].result += getResult(t[x].right);
 		}
 	}
 
 	void rotate(int x) {
 		int p = t[x].parent;
 		int g = t[p].parent;
-		bool root = isRoot(p);
-		bool left = (x == t[p].left);
-		connect(left ? t[x].right : t[x].left, p, left);
-		connect(p, x, !left);
-		connect(x, g, root ? -1 : (p == t[g].left));
-		update(p);
+		if (g != -1) {
+			if (t[g].left == p)
+				t[g].left = x;
+			else if (t[g].right == p)
+				t[g].right = x;
+		}
+		t[x].parent = g;
+		if (t[p].left == x) {
+			t[p].left = t[x].right;
+			if (t[p].left != -1)
+				t[t[p].left].parent = p;
+			t[x].right = p;
+		} else {
+			t[p].right = t[x].left;
+			if (t[p].right != -1)
+				t[t[p].right].parent = p;
+			t[x].left = p;
+		}
+		t[p].parent = x;
+		update(p), update(x);
 	}
 
 	void splay(int x) {
 		while (!isRoot(x)) {
 			int p = t[x].parent;
-			int g = t[p].parent;
-			if (!isRoot(p))
-				push(g);
-			push(p);
-			push(x);
-			if (!isRoot(p))
-				rotate((x == t[p].left) == (p == t[g].left) ? p : x);
+			if (!isRoot(p)) {
+				int g = t[p].parent;
+				push(g), push(p), push(x);
+				bool zigzig = (x == t[p].left) == (p == t[g].left);
+				rotate(zigzig ? p : x);
+			}
+			push(p), push(x);
 			rotate(x);
 		}
 		push(x);
-		update(x);
 	}
 
 	int expose(int x) {
 		int c = -1;
 		for (int y = x; y != -1; y = t[y].parent) {
 			splay(y);
-			t[y].left = c;
+			t[y].right = c;
+			update(y);
 			c = y;
 		}
 		splay(x);
@@ -117,7 +117,31 @@ public:
 		t[x].revert = !t[x].revert;
 	}
 
-	bool same(int x, int y) {
+	int root(int x) {
+		expose(x);
+		push(x);
+		while (t[x].left != -1) {
+			x = t[x].left;
+			push(x);
+		}
+		expose(x);
+		return x;
+	}
+
+	int parent(int x) {
+		expose(x);
+		if (t[x].left == -1)
+			return -1;
+		x = t[x].left;
+		push(x);
+		while (t[x].right != -1) {
+			x = t[x].right;
+			push(x);
+		}
+		return x;
+	}
+
+	bool path(int x, int y) {
 		if (x == y)
 			return true;
 		expose(x);
@@ -126,36 +150,54 @@ public:
 	}
 
 	void link(int x, int y) {
-		if (same(x, y))
-			throw exception();
+		if (path(x, y))
+			return;
 		evert(x);
 		t[x].parent = y;
 	}
 
-	void cut(int x, int y) {
-		evert(x);
-		expose(y);
-		if (t[y].right != x || t[x].left != -1)
-			throw exception();
-		t[t[y].right].parent = -1;
-		t[y].right = -1;
+	void cut(int x) {
+		expose(x);
+		if (t[x].left == -1)
+			return;
+		t[t[x].left].parent = -1;
+		t[x].left = -1;
 	}
 
 	int lca(int x, int y) {
+		if (!path(x, y))
+			return -1;
 		expose(x);
-		expose(y);
-		return t[x].parent;
+		return expose(y);
 	}
 
-	long long query(int x, int y) {
-		evert(x);
-		expose(y);
-		return getValue(y);
+	int depth(int x) {
+		expose(x);
+		if (t[x].left == -1)
+			return 0;
+		return t[t[x].left].size;
 	}
 
-	void update(int x, int y, long long v) {
-		evert(x);
-		expose(y);
-		t[y].delta += v;
+	int distance(int x, int y) {
+		int l = lca(x, y);
+		if (l == -1)
+			return -1;
+		return depth(y) + depth(x) - depth(l);
+	}
+
+	int64_t query(int x, int y) {
+		if (!path(x, y))
+			return 0;
+		evert(y);
+		expose(x);
+		return t[x].result;
+	}
+
+	void update(int x, int y, int64_t value) {
+		if (!path(x, y))
+			return;
+		evert(y);
+		expose(x);
+		t[x].delta += value;
 	}
 };
