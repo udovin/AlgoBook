@@ -44,7 +44,7 @@ private:
 		t[x].delta = 0;
 	}
 
-	void update(int x) {
+	void keep(int x) {
 		t[x].size = 1;
 		t[x].result = getValue(x);
 		if (t[x].left != -1) {
@@ -60,6 +60,7 @@ private:
 	void rotate(int x) {
 		int p = t[x].parent;
 		int g = t[p].parent;
+		push(p), push(x);
 		if (g != -1) {
 			if (t[g].left == p)
 				t[g].left = x;
@@ -79,7 +80,7 @@ private:
 			t[x].left = p;
 		}
 		t[p].parent = x;
-		update(p), update(x);
+		keep(p), keep(x);
 	}
 
 	void splay(int x) {
@@ -87,11 +88,9 @@ private:
 			int p = t[x].parent;
 			if (!isRoot(p)) {
 				int g = t[p].parent;
-				push(g), push(p), push(x);
 				bool zigzig = (x == t[p].left) == (p == t[g].left);
 				rotate(zigzig ? p : x);
 			}
-			push(p), push(x);
 			rotate(x);
 		}
 		push(x);
@@ -102,7 +101,7 @@ private:
 		for (int y = x; y != -1; y = t[y].parent) {
 			splay(y);
 			t[y].right = c;
-			update(y);
+			keep(y);
 			c = y;
 		}
 		splay(x);
@@ -119,7 +118,6 @@ public:
 
 	int root(int x) {
 		expose(x);
-		push(x);
 		while (t[x].left != -1) {
 			x = t[x].left;
 			push(x);
@@ -133,7 +131,6 @@ public:
 		if (t[x].left == -1)
 			return -1;
 		x = t[x].left;
-		push(x);
 		while (t[x].right != -1) {
 			x = t[x].right;
 			push(x);
@@ -144,8 +141,7 @@ public:
 	bool path(int x, int y) {
 		if (x == y)
 			return true;
-		expose(x);
-		expose(y);
+		expose(x), expose(y);
 		return t[x].parent != -1;
 	}
 
@@ -167,8 +163,8 @@ public:
 	int lca(int x, int y) {
 		if (!path(x, y))
 			return -1;
-		expose(x);
-		return expose(y);
+		expose(y);
+		return expose(x);
 	}
 
 	int depth(int x) {
@@ -182,22 +178,20 @@ public:
 		int l = lca(x, y);
 		if (l == -1)
 			return -1;
-		return depth(y) + depth(x) - depth(l);
+		return depth(x) + depth(y) - depth(l) * 2;
 	}
 
 	int64_t query(int x, int y) {
 		if (!path(x, y))
 			return 0;
-		evert(y);
-		expose(x);
+		evert(y), expose(x);
 		return t[x].result;
 	}
 
 	void update(int x, int y, int64_t value) {
 		if (!path(x, y))
 			return;
-		evert(y);
-		expose(x);
+		evert(y), expose(x);
 		t[x].delta += value;
 	}
 };
