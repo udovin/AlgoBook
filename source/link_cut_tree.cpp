@@ -131,6 +131,7 @@ public:
 		if (t[x].left == -1)
 			return -1;
 		x = t[x].left;
+		push(x);
 		while (t[x].right != -1) {
 			x = t[x].right;
 			push(x);
