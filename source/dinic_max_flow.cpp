@@ -18,10 +18,9 @@ private:
 			int a = q.front();
 			for (int i = 0; i < g[a].size(); i++) {
 				const Edge& e = g[a][i];
-				int b = e.to;
-				if (d[b] < 0 && e.flow < e.cap) {
-					d[b] = d[a] + 1;
-					q.push(b);
+				if (d[e.to] < 0 && e.flow < e.cap) {
+					d[e.to] = d[a] + 1;
+					q.push(e.to);
 				}
 			}
 		}
@@ -34,10 +33,9 @@ private:
 		for (int& i = it[a]; i < g[a].size(); i++) {
 			Edge& e = g[a][i];
 			Edge& r = g[e.to][e.rev];
-			int b = e.to;
-			if (d[b] != d[a] + 1)
+			if (d[e.to] != d[a] + 1)
 				continue;
-			int delta = dfs(b, min(flow, e.cap - e.flow));
+			int delta = dfs(e.to, min(flow, e.cap - e.flow));
 			if (delta > 0) {
 				e.flow += delta, r.flow -= delta;
 				return delta;
