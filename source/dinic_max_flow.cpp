@@ -1,14 +1,14 @@
 const int N = 1e2 + 11;
 const int INF = 1e9 + 7;
 
-class DinicMaxFlow {
-private:
+struct DinicMaxFlow {
 	struct Edge {
-		int to, rev, cap, flow;
+		int from, to, cap, flow;
 	};
 
 	int n, s, t;
-	vector<vector<Edge>> g;
+	vector<vector<int>> g;
+	vector<Edge> e;
 	vector<int> d, it;
 
 	bool bfs() {
@@ -17,10 +17,10 @@ private:
 		for (d[s] = 0, q.push(s); !q.empty(); q.pop()) {
 			int a = q.front();
 			for (int i = 0; i < g[a].size(); i++) {
-				const Edge& e = g[a][i];
-				if (d[e.to] < 0 && e.flow < e.cap) {
-					d[e.to] = d[a] + 1;
-					q.push(e.to);
+				const Edge& x = e[g[a][i]];
+				if (d[x.to] < 0 && x.flow < x.cap) {
+					d[x.to] = d[a] + 1;
+					q.push(x.to);
 				}
 			}
 		}
@@ -31,28 +31,27 @@ private:
 		if (!flow || a == t)
 			return flow;
 		for (int& i = it[a]; i < g[a].size(); i++) {
-			Edge& e = g[a][i];
-			Edge& r = g[e.to][e.rev];
-			if (d[e.to] != d[a] + 1)
+			Edge& x = e[g[a][i]];
+			Edge& y = e[g[a][i] ^ 1];
+			if (d[x.to] != d[a] + 1)
 				continue;
-			int delta = dfs(e.to, min(flow, e.cap - e.flow));
+			int delta = dfs(x.to, min(flow, x.cap - x.flow));
 			if (delta > 0) {
-				e.flow += delta, r.flow -= delta;
+				x.flow += delta, y.flow -= delta;
 				return delta;
 			}
 		}
 		return 0;
 	}
 
-public:
 	DinicMaxFlow(int n, int s, int t)
 		: n(n), s(s), t(t), g(n), d(n), it(n) {}
 
 	void add(int a, int b, int cap) {
-		Edge e1 = {b, int(g[b].size()), cap, 0};
-		Edge e2 = {a, int(g[a].size()), 0, 0};
-		g[a].push_back(e1);
-		g[b].push_back(e2);
+		g[a].push_back(e.size());
+		e.push_back({a, b, cap, 0});
+		g[b].push_back(e.size());
+		e.push_back({a, b, 0, 0});
 	}
 
 	int get() {
