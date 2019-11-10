@@ -40,7 +40,7 @@ struct AhoCorasick {
 					int u = t[v].link;
 					while (u > 0 && !t[u].to.count(p.first))
 						u = t[u].link;
-					if (t[u].to.find(p.first) != t[u].to.end())
+					if (t[u].to.count(p.first))
 						u = t[u].to[p.first];
 					t[p.second].link = u;
 				}
