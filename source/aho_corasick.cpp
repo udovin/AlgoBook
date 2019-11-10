@@ -1,27 +1,21 @@
-class AhoCorasick {
-private:
-	static const int LANG_SIZE = 26;
-	static const char FIRST_CHAR = 'a';
+struct AhoCorasick {
+	static const int L = 26;
+	static const char C = 'a';
 
 	struct Node {
 		map<char, int> to;
 		int link;
 		bool leaf;
 
-		int go[LANG_SIZE];
+		int go[L];
 
 		Node() : to(), link(), leaf() {
-			fill(go, go + LANG_SIZE, 0);
-		}
-
-		const int operator[](char c) const {
-			return go[c - FIRST_CHAR];
+			fill(go, go + L, 0);
 		}
 	};
 
 	vector<Node> t;
 
-public:
 	AhoCorasick() : t(1) {}
 
 	void add(const string& s) {
@@ -50,27 +44,11 @@ public:
 						u = t[u].to[p.first];
 					t[p.second].link = u;
 				}
-				t[v].go[p.first - FIRST_CHAR] = p.second;
+				t[v].go[p.first - C] = p.second;
 			}
-			for (int i = 0; i < LANG_SIZE; i++)
+			for (int i = 0; i < L; i++)
 				if (t[v].go[i] == 0)
 					t[v].go[i] = t[t[v].link].go[i];
 		}
-	}
-
-	int size() const {
-		return t.size();
-	}
-
-	const Node& operator[](int v) const {
-		return t[v];
-	}
-
-	int go(int v, char c) const {
-		while (v > 0 && !t[v].to.count(c))
-			v = t[v].link;
-		if (t[v].to.count(c))
-			v = t[v].to.find(c)->second;
-		return v;
 	}
 };
