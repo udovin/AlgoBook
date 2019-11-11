@@ -50,7 +50,7 @@ struct DinicMaxFlow {
 		g[a].push_back(e.size());
 		e.push_back({a, b, cap, 0});
 		g[b].push_back(e.size());
-		e.push_back({a, b, 0, 0});
+		e.push_back({b, a, 0, 0});
 	}
 
 	int maxFlow(int s, int t) {
