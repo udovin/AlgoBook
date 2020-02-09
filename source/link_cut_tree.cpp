@@ -142,8 +142,8 @@ public:
 	bool path(int x, int y) {
 		if (x == y)
 			return true;
-		expose(x), expose(y);
-		return t[x].parent != -1;
+		expose(y), expose(x);
+		return t[y].parent != -1;
 	}
 
 	void link(int x, int y) {
@@ -164,8 +164,8 @@ public:
 	int lca(int x, int y) {
 		if (!path(x, y))
 			return -1;
-		expose(y);
-		return expose(x);
+		expose(x);
+		return expose(y);
 	}
 
 	int depth(int x) {
@@ -179,20 +179,20 @@ public:
 		int l = lca(x, y);
 		if (l == -1)
 			return -1;
-		return depth(x) + depth(y) - depth(l) * 2;
+		return depth(y) + depth(x) - depth(l) * 2;
 	}
 
 	int64_t query(int x, int y) {
 		if (!path(x, y))
 			return 0;
-		evert(y), expose(x);
-		return t[x].result;
+		evert(x), expose(y);
+		return t[y].result;
 	}
 
 	void update(int x, int y, int64_t value) {
 		if (!path(x, y))
 			return;
-		evert(y), expose(x);
-		t[x].delta += value;
+		evert(x), expose(y);
+		t[y].delta += value;
 	}
 };
