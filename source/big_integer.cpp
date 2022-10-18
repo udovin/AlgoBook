@@ -5,116 +5,106 @@ private:
 	vector<int> digits;
 	bool sign;
 
-	static int compare(
-		const vector<int>& digits, const vector<int>& other) {
-		if (digits.size() != other.size())
-			return digits.size() < other.size() ? -1 : 1;
-		for (int i = digits.size() - 1; i >= 0; i--) {
-			if (digits[i] != other[i])
-				return digits[i] < other[i] ? -1 : 1;
+	static int compare(const vector<int>& a, const vector<int>& b) {
+		if (a.size() != b.size())
+			return a.size() < b.size() ? -1 : 1;
+		for (int i = a.size() - 1; i >= 0; i--) {
+			if (a[i] != b[i])
+				return a[i] < b[i] ? -1 : 1;
 		}
 		return 0;
 	}
 
-	static void add(
-		vector<int>& digits, const vector<int>& other) {
-		digits.resize(max(digits.size(), other.size()) + 1);
+	static void add(vector<int>& a, const vector<int>& b) {
+		a.resize(max(a.size(), b.size()) + 1);
 		int carry = 0;
-		for (int i = 0; i < digits.size(); i++) {
-			carry += digits[i];
-			if (i < other.size())
-				carry += other[i];
-			digits[i] = carry;
+		for (int i = 0; i < a.size(); i++) {
+			carry += a[i];
+			if (i < b.size())
+				carry += b[i];
+			a[i] = carry;
 			carry = 0;
-			if (digits[i] >= BASE) {
-				digits[i] -= BASE;
+			if (a[i] >= BASE) {
+				a[i] -= BASE;
 				carry = 1;
 			}
 		}
-		while (digits.size() > 1 && digits.back() == 0)
-			digits.pop_back();
+		while (a.size() > 1 && a.back() == 0)
+			a.pop_back();
 	}
 
-	static void subtract(
-		vector<int>& digits, const vector<int>& other) {
-		digits.resize(max(digits.size(), other.size()) + 1);
+	static void subtract(vector<int>& a, const vector<int>& b) {
+		a.resize(max(a.size(), b.size()) + 1);
 		int carry = 0;
-		for (int i = 0; i < digits.size(); i++) {
-			carry += digits[i];
-			if (i < other.size())
-				carry -= other[i];
-			digits[i] = carry;
+		for (int i = 0; i < a.size(); i++) {
+			carry += a[i];
+			if (i < b.size())
+				carry -= b[i];
+			a[i] = carry;
 			carry = 0;
-			if (digits[i] < 0) {
-				digits[i] += BASE;
+			if (a[i] < 0) {
+				a[i] += BASE;
 				carry = -1;
 			}
 		}
-		while (digits.size() > 1 && digits.back() == 0)
-			digits.pop_back();
+		while (a.size() > 1 && a.back() == 0)
+			a.pop_back();
 	}
 
-	static vector<int> multiply(
-		const vector<int>& digits, const vector<int>& other) {
-		vector<int> value(digits.size() + other.size());
-		for (int i = 0; i < digits.size(); i++) {
+	static vector<int> multiply(const vector<int>& a, const vector<int>& b) {
+		vector<int> c(a.size() + b.size());
+		for (int i = 0; i < a.size(); i++) {
 			long long carry = 0;
-			for (int j = 0; j < other.size() || carry > 0; j++) {
-				carry += value[i + j]
-					+ digits[i] * (long long)other[j];
-				value[i + j] = carry % BASE;
+			for (int j = 0; j < b.size() || carry > 0; j++) {
+				carry += c[i + j] + a[i] * (long long)(j < b.size() ? b[j] : 0);
+				c[i + j] = carry % BASE;
 				carry /= BASE;
 			}
 		}
-		while (value.size() > 1 && value.back() == 0)
-			value.pop_back();
-		return value;
+		while (c.size() > 1 && c.back() == 0)
+			c.pop_back();
+		return c;
 	}
 
-	static vector<int> divide(
-		const vector<int>& digits, const vector<int>& other) {
-		vector<int> value(digits.size());
-		vector<int> mod, cur;
-		for (int i = digits.size() - 1; i >= 0; i--) {
-			mod.insert(mod.begin(), digits[i]);
+	static vector<int> divide(const vector<int>& a, const vector<int>& b) {
+		vector<int> c(a.size());
+		vector<int> mod;
+		for (int i = a.size() - 1; i >= 0; i--) {
+			mod.insert(mod.begin(), a[i]);
 			while (mod.size() > 1 && mod.back() == 0)
 				mod.pop_back();
 			int x = 0, l = 0, r = BASE;
 			while (l <= r) {
 				int m = (l + r) / 2;
-				cur = multiply(other, vector<int>(1, m));
-				if (compare(mod, cur) >= 0)
+				if (compare(mod, multiply(b, vector<int>(1, m))) >= 0)
 					x = m, l = m + 1;
 				else
 					r = m - 1;
 			}
-			value[i] = x;
-			cur = multiply(other, vector<int>(1, x));
-			subtract(mod, cur);
+			c[i] = x;
+			subtract(mod, multiply(b, vector<int>(1, x)));
 		}
-		while (value.size() > 1 && value.back() == 0)
-			value.pop_back();
-		return value;
+		while (c.size() > 1 && c.back() == 0)
+			c.pop_back();
+		return c;
 	}
 
 	static vector<int> module(
-		const vector<int>& digits, const vector<int>& other) {
-		vector<int> mod, cur;
-		for (int i = digits.size() - 1; i >= 0; i--) {
-			mod.insert(mod.begin(), digits[i]);
+		const vector<int>& a, const vector<int>& b) {
+		vector<int> mod;
+		for (int i = a.size() - 1; i >= 0; i--) {
+			mod.insert(mod.begin(), a[i]);
 			while (mod.size() > 1 && mod.back() == 0)
 				mod.pop_back();
 			int x = 0, l = 0, r = BASE;
 			while (l <= r) {
 				int m = (l + r) / 2;
-				cur = multiply(other, vector<int>(1, m));
-				if (compare(mod, cur) >= 0)
+				if (compare(mod, multiply(b, vector<int>(1, m))) >= 0)
 					x = m, l = m + 1;
 				else
 					r = m - 1;
 			}
-			cur = multiply(other, vector<int>(1, x));
-			subtract(mod, cur);
+			subtract(mod, multiply(b, vector<int>(1, x)));
 		}
 		return mod;
 	}
@@ -242,37 +232,14 @@ public:
 		return compare(digits, other.digits) > 0;
 	}
 
-	bool operator!=(const BigInt& other) const {
-		return !operator==(other);
-	}
-
-	bool operator<=(const BigInt& other) const {
-		return !operator>(other);
-	}
-
-	bool operator>=(const BigInt& other) const {
-		return !operator<(other);
-	}
-
-	BigInt operator+(const BigInt& other) const {
-		return BigInt(*this) += other;
-	}
-
-	BigInt operator-(const BigInt& other) const {
-		return BigInt(*this) -= other;
-	}
-
-	BigInt operator*(const BigInt& other) const {
-		return BigInt(*this) *= other;
-	}
-
-	BigInt operator/(const BigInt& other) const {
-		return BigInt(*this) /= other;
-	}
-
-	BigInt operator%(const BigInt& other) const {
-		return BigInt(*this) %= other;
-	}
+	bool operator!=(const BigInt& other) const { return !operator==(other); }
+	bool operator<=(const BigInt& other) const { return !operator>(other); }
+	bool operator>=(const BigInt& other) const { return !operator<(other); }
+	BigInt operator+(const BigInt& other) const { return BigInt(*this) += other; }
+	BigInt operator-(const BigInt& other) const { return BigInt(*this) -= other; }
+	BigInt operator*(const BigInt& other) const { return BigInt(*this) *= other; }
+	BigInt operator/(const BigInt& other) const { return BigInt(*this) /= other; }
+	BigInt operator%(const BigInt& other) const { return BigInt(*this) %= other; }
 };
 
 istream& operator>>(istream& is, BigInt& value) {
@@ -283,6 +250,5 @@ istream& operator>>(istream& is, BigInt& value) {
 }
 
 ostream& operator<<(ostream& os, const BigInt& value) {
-	cout << string(value);
-	return os;
+	return os << string(value);
 }
