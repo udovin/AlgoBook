@@ -86,10 +86,12 @@ $x=\sum_{i=1}^{n}r_{i}M_{i}M_{i}^{-1}\bmod M$
 \lstinputlisting{source/dynamic_convex_hull_trick.cpp}
 
 \section{Geometry}
+\subsection{Facts}
+$\alpha(a, b) =$ counterclock-wise angle from $a$ to $b$.\\
+$a \cdot b = |a| \cdot |b| \cdot cos(\alpha(a, b))$\\
+$a \wedge b = |a| \cdot |b| \cdot sin(\alpha(a, b))$\\
 \subsection{2D framework}
 \lstinputlisting{source/geom_2d.cpp}
-\subsection{Intersection}
-\lstinputlisting{source/intersection.cpp}
 \section{Other algorithms}
 \subsection{Simplex method (two-phased)}
 Time complexity: $O((n + m) \cdot n)$

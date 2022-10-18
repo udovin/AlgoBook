@@ -21,20 +21,10 @@ private:
 		}
 	}
 public:
-	Analysis(int n)
-		: n(n), g(n), state(n), used(n), degree(n) {}
+	Analysis(int n) : n(n), g(n), state(n), used(n), degree(n) {}
 
-	void addEdge(int u, int v) {
-		g[v].push_back(u);
-		degree[u]++;
-	}
-
-	void addState(int x, bool f) {
-		if (f)
-			state[x] = 1;
-		else
-			state[x] = -1;
-	}
+	void addEdge(int u, int v) { g[v].push_back(u); degree[u]++; }
+	void addState(int x, bool f) { state[x] = f ? 1 : -1; }
 
 	vector<char> solve() {
 		for (int i = 0; i < n; i++) {

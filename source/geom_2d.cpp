@@ -1,38 +1,19 @@
 const double PI = acos(-1);
+const double EPS = 1e-9;
 
 struct Vec2 {
-	int64_t x, y;
-
-	bool operator<(const Vec2& o) const {
-		return pair(x, y) < make_pair(o.x, o.y);
-	}
-
-	Vec2 operator+(const Vec2& v) const {
-		return {x + v.x, y + v.y};
-	}
-
-	Vec2 operator-(const Vec2& v) const {
-		return {x - v.x, y - v.y};
-	}
-
-	Vec2 operator*(int64_t a) const {
-		return {x * a, y * a};
-	}
-
-	int64_t operator*(const Vec2& v) const {
-		return x * v.x + y * v.y;
-	}
-
-	int64_t operator%(const Vec2& v) const {
-		return x * v.y - y * v.x;
-	}
-
-	int64_t lenSq() const {
-		return x * x + y * y;
-	}
+	double x, y;
+	bool operator<(const Vec2& v) const { return pair(x, y) < pair(v.x, v.y); }
+	Vec2 operator+(const Vec2& v) const { return {x + v.x, y + v.y}; }
+	Vec2 operator-(const Vec2& v) const { return {x - v.x, y - v.y}; }
+	Vec2 operator*(double a) const { return {x * a, y * a}; }
+	double operator*(const Vec2& v) const { return x * v.x + y * v.y; }
+	double operator%(const Vec2& v) const { return x * v.y - y * v.x; } // a ^ b
+	double lenSq() const { return x * x + y * y; }
+	double len() const { return sqrt(lenSq()); }
 };
 
-vector<int> convexHull(const vector<Vec2>& a) {
+vector<int> convexHull(const vector<Vec2>& a) { // clockwise
 	vector<int> p(a.size());
 	int s = 0;
 	for (int i = 0; i < p.size(); i++) {
@@ -71,27 +52,39 @@ vector<int> convexHull(const vector<Vec2>& a) {
 	return h;
 }
 
-struct Line {
-	int64_t a, b, c;
+struct Line { // a -> b
+	Vec2 a, b;
+	bool contains(const Vec2& v) const { return abs((b - a) % (v - a)) < EPS; }
+	bool segmentContains(const Vec2& v) const {
+		return contains(v) && (b - a) * (v - a) > -EPS && (a - b) * (v - b) > -EPS;
+	}
 };
 
-Line getLine(const Vec2& a, const Vec2& b) {
-	Line c;
-	c.a = b.y - a.y;
-	c.b = a.x - b.x;
-	c.c = -(c.a * a.x + c.b * a.y);
-	return c;
+optional<Vec2> intersect(const Line& a, const Line& b) {
+	auto dax = a.a.x - a.b.x;
+	auto day = a.a.y - a.b.y;
+	auto dbx = b.a.x - b.b.x;
+	auto dby = b.a.y - b.b.y;
+	auto l = dax * dby - day * dbx;
+	if (abs(l) < EPS) {
+		return {};
+	}
+	auto da = a.a % a.b;
+	auto db = b.a % b.b;
+	auto x = da * dbx - db * dax;
+	auto y = da * dby - db * day;
+	return Vec2{x / l, y / l};
 }
 
 struct Circle : public Vec2 {
-	int64_t r;
+	double r;
 
 	double area() const {
 		return PI * r * r;
 	}
 
 	// d - distance from center to chord
-	double segmentArea(int64_t d) {
+	double segmentArea(double d) {
 		if (d < 0) {
 			return area() - segmentArea(-d);
 		}

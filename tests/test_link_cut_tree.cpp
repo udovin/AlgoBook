@@ -10,7 +10,7 @@ using namespace std;
 
 mt19937 mt;
 
-pair<vector<pair<int, int>>, int> gen_tree(int n) {
+pair<vector<pair<int, int>>, int> genTree(int n) {
 	vector<int> p(n);
 	for (int i = 0; i < n; i++)
 		p[i] = i;
@@ -24,10 +24,10 @@ pair<vector<pair<int, int>>, int> gen_tree(int n) {
 	return {t, p[0]};
 }
 
-void test_depth() {
+void testDepth() {
 	const int n = 500;
 	const int m = 20000;
-	pair<vector<pair<int, int>>, int> t = gen_tree(n);
+	pair<vector<pair<int, int>>, int> t = genTree(n);
 	vector<vector<int>> g(n);
 	vector<int> vd(n);
 	vector<int> p(n, -1);
@@ -61,7 +61,6 @@ void test_depth() {
 }
 
 int main() {
-	test_depth();
-
+	testDepth();
 	return 0;
 }

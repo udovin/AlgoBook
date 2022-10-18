@@ -1,18 +1,9 @@
 struct Complex {
 	long double x, y;
-
 	Complex() : x(), y() {}
-
 	Complex(long double x, long double y) : x(x), y(y) {}
-
-	Complex operator+(const Complex& o) const {
-		return {x + o.x, y + o.y};
-	}
-
-	Complex operator-(const Complex& o) const {
-		return {x - o.x, y - o.y};
-	}
-
+	Complex operator+(const Complex& o) const { return {x + o.x, y + o.y}; }
+	Complex operator-(const Complex& o) const { return {x - o.x, y - o.y}; }
 	Complex operator*(const Complex& o) const {
 		return {x * o.x - y * o.y, x * o.y + y * o.x};
 	}

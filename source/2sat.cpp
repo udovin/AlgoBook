@@ -22,29 +22,15 @@ public:
 	TwoSat(int n) : g(2 * n), gr(2 * n) {}
 
 	// id returns id of variable
-	int id(int x, bool neg = false) {
-		return x * 2 + neg;
-	}
-
+	int id(int x, bool neg = false) { return x * 2 + neg; }
 	// addIMPLY adds (x -> y)
-	void addIMPLY(int x, int y) {
-		g[x].push_back(y), gr[y].push_back(x);
-	}
-
+	void addIMPLY(int x, int y) { g[x].push_back(y), gr[y].push_back(x); }
 	// add adds (x)
-	void add(int x) {
-		addIMPLY(x ^ 1, x);
-	}
-
+	void add(int x) { addIMPLY(x ^ 1, x); }
 	// addOR adds (x | y)
-	void addOR(int x, int y) {
-		addIMPLY(x ^ 1, y), addIMPLY(y ^ 1, x);
-	}
-
+	void addOR(int x, int y) { addIMPLY(x ^ 1, y), addIMPLY(y ^ 1, x); }
 	// addXOR adds (x ^ y)
-	void addXOR(int x, int y) {
-		addOR(x, y), addOR(x ^ 1, y ^ 1);
-	}
+	void addXOR(int x, int y) { addOR(x, y), addOR(x ^ 1, y ^ 1); }
 
 	vector<bool> solve() {
 		order.clear();
