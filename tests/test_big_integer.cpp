@@ -10,8 +10,6 @@ using namespace std;
 
 #include <big_integer.cpp>
 
-mt19937 mt;
-
 void testBigInt() {
     {
         BigInt a = 10, b = 5;

@@ -4,11 +4,10 @@
 #include <functional>
 #include <cassert>
 #include <iostream>
+#include <optional>
 using namespace std;
 
 #include <geom_2d.cpp>
-
-mt19937 mt;
 
 void testVec2() {
     assert((Vec2{1, 0} % Vec2{0, 1} == 1));
@@ -21,12 +20,27 @@ void testVec2() {
 void testLine() {
     for (int i = -10; i <= 10; i++) {
         assert((Line{{1, 1}, {5, 5}}.contains({double(i), double(i)})));
+        assert(i < 1 || i > 5 || (Line{{1, 1}, {5, 5}}.segmentContains({double(i), double(i)})));
+    }
+    mt19937 mt;
+	uniform_int_distribution<int> gen(-100, 100);
+    for (int i = 0; i < 1000000; i++) {
+        Line a{Vec2{double(gen(mt)), double(gen(mt))}, Vec2{double(gen(mt)), double(gen(mt))}};
+        Line b{Vec2{double(gen(mt)), double(gen(mt))}, Vec2{double(gen(mt)), double(gen(mt))}};
+        if ((a.b - a.a) % (b.b - b.a) == 0) {
+            continue;
+        }
+        auto x = intersect(a, b);
+        assert(x);
+        assert(a.contains(*x));
+        assert(b.contains(*x));
     }
 }
 
 void testConvexHull() {
     const int n = 5000;
     const int w = 50000;
+    mt19937 mt;
 	uniform_int_distribution<int> gen(-w, w);
     vector<Vec2> poly;
     for (int i = 0; i < n; i++) {
@@ -42,5 +56,6 @@ void testConvexHull() {
 int main() {
     testVec2();
 	testConvexHull();
+    testLine();
 	return 0;
 }

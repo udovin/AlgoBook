@@ -1,5 +1,5 @@
 const double PI = acos(-1);
-const double EPS = 1e-9;
+const double EPS = 1e-8;
 
 struct Vec2 {
 	double x, y;
@@ -12,6 +12,9 @@ struct Vec2 {
 	double lenSq() const { return x * x + y * y; }
 	double len() const { return sqrt(lenSq()); }
 };
+
+istream& operator>>(istream& is, Vec2& v) { return is >> v.x >> v.y; }
+ostream& operator<<(ostream& os, const Vec2& v) { return os << v.x << ' ' << v.y; }
 
 vector<int> convexHull(const vector<Vec2>& a) { // clockwise
 	vector<int> p(a.size());
@@ -78,11 +81,7 @@ optional<Vec2> intersect(const Line& a, const Line& b) {
 
 struct Circle : public Vec2 {
 	double r;
-
-	double area() const {
-		return PI * r * r;
-	}
-
+	double area() const { return PI * r * r; }
 	// d - distance from center to chord
 	double segmentArea(double d) {
 		if (d < 0) {
@@ -95,7 +94,6 @@ struct Circle : public Vec2 {
 		double s = asin(l / r) * r * r;
 		return s - l * d;
 	}
-
 	// p - position of intersection of two perpendicular chords
 	double segmentOverlapArea(Vec2 p) {
 		if (p.x < 0) {

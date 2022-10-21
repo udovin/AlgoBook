@@ -8,9 +8,7 @@ using namespace std;
 
 #include <link_cut_tree.cpp>
 
-mt19937 mt;
-
-pair<vector<pair<int, int>>, int> genTree(int n) {
+pair<vector<pair<int, int>>, int> genTree(mt19937& mt, int n) {
 	vector<int> p(n);
 	for (int i = 0; i < n; i++)
 		p[i] = i;
@@ -25,9 +23,10 @@ pair<vector<pair<int, int>>, int> genTree(int n) {
 }
 
 void testDepth() {
-	const int n = 500;
-	const int m = 20000;
-	pair<vector<pair<int, int>>, int> t = genTree(n);
+	mt19937 mt;
+	const int n = 5000;
+	const int m = 200000;
+	pair<vector<pair<int, int>>, int> t = genTree(mt, n);
 	vector<vector<int>> g(n);
 	vector<int> vd(n);
 	vector<int> p(n, -1);
