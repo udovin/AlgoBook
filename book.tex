@@ -1,10 +1,12 @@
-\documentclass[10pt]{article}
+\documentclass[11pt]{article}
 
 \usepackage{listings}
 \usepackage{fancyhdr}
 \usepackage{lastpage}
 \usepackage{courier}
 \usepackage{xcolor}
+\usepackage[T1]{fontenc}
+\renewcommand{\baselinestretch}{0.95}
 
 \usepackage{geometry}
 
@@ -32,7 +34,7 @@
 \subsection{Extended GCD (non-recursive)}
 \lstinputlisting{source/exgcd.cpp}
 \subsection{Big Integer}
-\lstinputlisting{source/big_integer.cpp}
+\lstinputlisting{source/big_integer_short.cpp}
 \subsection{FFT}
 \lstinputlisting{source/fft.cpp}
 \subsection{Integrate}
@@ -58,6 +60,8 @@ $x=\sum_{i=1}^{n}r_{i}M_{i}M_{i}^{-1}\bmod M$
 \lstinputlisting{source/link_cut_tree.cpp}
 \subsection{2-satisfiability}
 \lstinputlisting{source/2sat.cpp}
+\subsection{Bridges and cut-points}
+\lstinputlisting{source/bridges.cpp}
 \subsection{Global min cut}
 \lstinputlisting{source/global_min_cut.cpp}
 \subsection{Min cost max flow}
@@ -78,6 +82,8 @@ $x=\sum_{i=1}^{n}r_{i}M_{i}M_{i}^{-1}\bmod M$
 \lstinputlisting{source/hash_string.cpp}
 \subsection{Manacher}
 \lstinputlisting{source/manacher.cpp}
+\subsection{EerTree}
+\lstinputlisting{source/eertree.cpp}
 
 \section{Dynamic programming}
 \subsection{Convex Hull Trick}

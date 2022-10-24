@@ -8,13 +8,15 @@ struct Vec2 {
 	Vec2 operator-(const Vec2& v) const { return {x - v.x, y - v.y}; }
 	Vec2 operator*(double a) const { return {x * a, y * a}; }
 	double operator*(const Vec2& v) const { return x * v.x + y * v.y; }
-	double operator%(const Vec2& v) const { return x * v.y - y * v.x; } // a ^ b
+	double operator%(const Vec2& v) const { return x * v.y - y * v.x; }
 	double lenSq() const { return x * x + y * y; }
 	double len() const { return sqrt(lenSq()); }
 };
 
 istream& operator>>(istream& is, Vec2& v) { return is >> v.x >> v.y; }
-ostream& operator<<(ostream& os, const Vec2& v) { return os << v.x << ' ' << v.y; }
+ostream& operator<<(ostream& os, const Vec2& v) {
+	return os << v.x << ' ' << v.y;
+}
 
 vector<int> convexHull(const vector<Vec2>& a) { // clockwise
 	vector<int> p(a.size());
@@ -59,7 +61,8 @@ struct Line { // a -> b
 	Vec2 a, b;
 	bool contains(const Vec2& v) const { return abs((b - a) % (v - a)) < EPS; }
 	bool segmentContains(const Vec2& v) const {
-		return contains(v) && (b - a) * (v - a) > -EPS && (a - b) * (v - b) > -EPS;
+		return contains(v) &&
+			(b - a) * (v - a) > -EPS && (a - b) * (v - b) > -EPS;
 	}
 };
 
@@ -110,6 +113,6 @@ struct Circle : public Vec2 {
 		double rx = sqrt(r * r - p.y * p.y);
 		double ry = sqrt(r * r - p.x * p.x);
 		double s = abs(p.x * p.y - p.y * rx) + abs(p.x * ry - p.y * p.x);
-		return (abs(acos(double(p.x) / r) - asin(double(p.y) / r)) * r * r - s) / 2;
+		return (abs(acos(p.x / r) - asin(p.y / r)) * r * r - s) / 2;
 	}
 };

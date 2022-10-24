@@ -32,7 +32,8 @@ public:
             vis[v[1]] = n;
             for (int i = 2; i <= n; ++i) {
                 if (i == n) {
-                    res = min(res, d[v[p]]); // if d[v[p]] < res, then s = v[p] & t = v[prev]
+                    // if d[v[p]] < res, then s = v[p] & t = v[prev]
+                    res = min(res, d[v[p]]);
                     for (int j = 1; j <= n; ++j) {
                         g[v[prev]][v[j]] += g[v[p]][v[j]];
                         g[v[j]][v[prev]] = g[v[prev]][v[j]];
