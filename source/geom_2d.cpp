@@ -116,3 +116,18 @@ struct Circle : public Vec2 {
 		return (abs(acos(p.x / r) - asin(p.y / r)) * r * r - s) / 2;
 	}
 };
+
+struct Sphere {
+    double x, y, z;
+	double r;
+	double area() const { return 4 * PI * r * r; }
+	double volume() const { return area() * r / 3; }
+    // d - distance from center to chord
+    double segmentVolume(double d) const {
+        if (d > 0) {
+            return volume() - segmentVolume(-d);
+        }
+        auto h = r + d;
+        return PI * h * h * (r - h / 3);
+    }
+};
