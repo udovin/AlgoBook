@@ -118,16 +118,19 @@ struct Circle : public Vec2 {
 };
 
 struct Sphere {
-    double x, y, z;
+	double x, y, z;
 	double r;
 	double area() const { return 4 * PI * r * r; }
 	double volume() const { return area() * r / 3; }
-    // d - distance from center to chord
-    double segmentVolume(double d) const {
-        if (d > 0) {
-            return volume() - segmentVolume(-d);
-        }
-        auto h = r + d;
-        return PI * h * h * (r - h / 3);
-    }
+	// d - distance from center to chord
+	double segmentVolume(double d) const {
+		if (d < 0) {
+			return volume() - segmentVolume(-d);
+		}
+		if (d >= r) {
+			return 0;
+		}
+		auto h = r - d;
+		return PI * h * h * (r - h / 3);
+	}
 };
